@@ -1,5 +1,4 @@
 // src/pages/NearbyShops.jsx
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -7,21 +6,21 @@ export default function NearbyShops() {
   const [shops, setShops] = useState([]);
   const [location, setLocation] = useState({ lat: "", lon: "" });
   const [medicine, setMedicine] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
 
-  const fetchShops = async () => {
+  const fetchAnalysis = async () => {
     if (!location.lat || !location.lon || !medicine) return;
 
     try {
-      const res = await axios.get("http://localhost:5000/nearby-shops", {
-        params: {
-          lat: location.lat,
-          lon: location.lon,
-          medicine,
-        },
+      const res = await axios.post(`http://localhost:5000/analyze?lat=${location.lat}&lon=${location.lon}`, {
+        symptom: medicine, // treating medicine input as symptom prompt
       });
-      setShops(res.data);
+
+      setDiagnosis(res.data.diagnosis);
+      setMedicine(res.data.medicine);
+      setShops(res.data.shops);
     } catch (err) {
-      console.error("Error fetching shops:", err);
+      console.error("Error analyzing:", err);
     }
   };
 
@@ -40,22 +39,29 @@ export default function NearbyShops() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Nearby Shops with Medicines</h2>
+      <h2 className="text-2xl font-bold mb-4">Nearby Shops & Medicine Suggestion</h2>
       <div className="flex gap-2 mb-4">
         <input
           type="text"
           className="border px-3 py-2 rounded w-full"
-          placeholder="Enter medicine name"
+          placeholder="Enter symptom"
           value={medicine}
           onChange={(e) => setMedicine(e.target.value)}
         />
         <button
-          onClick={fetchShops}
+          onClick={fetchAnalysis}
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
         >
-          Search
+          Analyze & Find Shops
         </button>
       </div>
+
+      {diagnosis && (
+        <div className="mb-4 p-4 bg-green-100 rounded">
+          <p className="font-semibold">Diagnosis: {diagnosis}</p>
+          <p className="font-semibold">Suggested Medicine: {medicine}</p>
+        </div>
+      )}
 
       {shops.length === 0 ? (
         <p className="text-gray-600">No shops found.</p>

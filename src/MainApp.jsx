@@ -5,6 +5,9 @@ import Navbar from "./components/Navbar";
 import Landing from './Landing';
 import NearbyShops from "./pages/NearbyShops";
 import Login from "./pages/Login";
+import Home from "./pages/Home";
+
+<Route path="/" element={<Home />} />
 
 export default function MainApp() {
   return (
