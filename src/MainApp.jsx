@@ -6,13 +6,14 @@ import Landing from './Landing';
 import NearbyShops from "./pages/NearbyShops";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-
+import SymptomInput from './pages/SymptomInput';
 export default function MainApp() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
       <Navbar />
       <Routes>
+        <Route path="/symptom" element={<SymptomInput />} />
         <Route path="/" element={<Home />} />
         <Route path="/" element={<Landing />} />
         <Route path="/app" element={<MainApp />} />
